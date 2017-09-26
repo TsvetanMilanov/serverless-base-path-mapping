@@ -27,6 +27,19 @@ class CreateBasePathMappingService {
 			});
 	}
 
+	deleteBasePathMapping() {
+		return this._getMappingInfo(this._config.basePath, this._config.domainName)
+			.then(mappingInfo => {
+				if (!mappingInfo || !mappingInfo.restApiId) {
+					this.serverless.cli.log(`Base path mapping ${this._config.basePath} for domain name ${this._config.domainName} already removed.`);
+					return true;
+				}
+
+				this.serverless.cli.log(`Removing base path mapping ${this._config.basePath} for domain name ${this._config.domainName}`);
+				return this._deleteBasePathMapping();
+			});
+	}
+
 	_getMappingInfo(basePath, domainName) {
 		return this._provider.request("APIGateway", "getBasePathMappings", { domainName })
 			.then(mappings => {
@@ -51,8 +64,21 @@ class CreateBasePathMappingService {
 
 	}
 
+	_deleteBasePathMapping() {
+		return this._getRestApiInfo()
+			.then(apiInfo => {
+				return this._provider.request("APIGateway", "deleteBasePathMapping", {
+					basePath: this._config.basePath,
+					domainName: this._config.domainName
+				});
+			});
+
+	}
+
 	_getRestApiInfo() {
-		return this._provider.request("APIGateway", "getRestApis")
+		return this._provider.request("APIGateway", "getRestApis", {
+				limit: 500
+			})
 			.then(apis => {
 				return apis.items.find(a => a.name === this._provider.naming.getApiGatewayName());
 			});
