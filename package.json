@@ -1,6 +1,6 @@
 {
   "name": "serverless-base-path-mapping",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Creates a AWS base path mapping in custom domain name",
   "main": "index.js",
   "scripts": {
