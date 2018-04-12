@@ -48,11 +48,10 @@ class CreateBasePathMappingService {
 					stage: this._config.stage
 				});
 			});
-
 	}
 
 	_getRestApiInfo() {
-		return this._provider.request("APIGateway", "getRestApis")
+		return this._provider.request("APIGateway", "getRestApis", {})
 			.then(apis => {
 				return apis.items.find(a => a.name === this._provider.naming.getApiGatewayName());
 			});
